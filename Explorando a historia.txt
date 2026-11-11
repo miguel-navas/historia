@@ -1,0 +1,37 @@
+EXPLORANDO A HISTÓRIA
+Visão do projeto
+
+O que quero criar
+Um site visual e acessível para explorar a história da Terra e da humanidade, das eras geológicas ao mundo atual. A experiência deve despertar curiosidade e ajudar qualquer pessoa a pesquisar um assunto, compreender seu contexto e encontrar caminhos para se aprofundar.
+
+Como a experiência se organiza
+- Uma linha do tempo conduz a jornada, conectando períodos, sociedades e acontecimentos.
+- Trilhas temáticas paralelas permitem explorar assuntos como guerras, revoluções e mitologias sem perder sua relação com os períodos históricos.
+- Páginas de períodos, civilizações, acontecimentos e personagens se conectam entre si; busca e filtros ajudam a localizar temas.
+- O conteúdo combina uma introdução clara com fontes primárias e leituras adicionais para quem deseja pesquisar mais.
+
+Escopo histórico
+- O percurso começa pelo tempo profundo: formação da Terra, eras geológicas e dinossauros.
+- A história humana vem depois, desde as origens da espécie e sociedades antigas até a atualidade. Dinossauros não avianos e seres humanos pertencem a períodos muito diferentes; a navegação deve deixar essa separação clara.
+- A organização inicial considera Pré-História, Antiguidade, Idade Média e períodos posteriores, junto a trilhas temáticas.
+- A forma de organizar histórias de diferentes regiões e povos ainda precisa ser definida; evitar tratar “Oriental” como uma categoria única e homogênea.
+
+Público e tom
+O público é geral. A linguagem deve ser clara sem simplificar a história a ponto de distorcer debates, causas ou consequências. O site é para consulta e pesquisa; não está previsto um modo escolar ou ferramentas de planejamento de aulas.
+
+Fontes e confiabilidade
+- Distinguir fatos bem estabelecidos, interpretações históricas e tradições mitológicas.
+- Apresentar fontes e referências junto aos conteúdos, com fontes primárias e aprofundamento quando possível.
+- Contextualizar incertezas, perspectivas e limites das fontes; evitar apresentar uma única perspectiva como universal.
+- Usar imagens como apoio visual, não como prova documental. Confirmar sua adequação ao período e identificar seu caráter ilustrativo quando necessário.
+
+Referências visuais existentes
+A pasta imagens\galeria contém 30 imagens de referência para início, períodos, cards, busca, filtros, guerras, revoluções, mitologias e exploração. Elas apontam para uma identidade visual escura, com azul profundo, dourado, imagens panorâmicas e cards. Servem como referências de direção, não como definição final de layout, conteúdo ou funcionalidades.
+
+Primeiro recorte
+Definir a arquitetura de informação e os requisitos da experiência de exploração: linha do tempo, trilhas temáticas, páginas de conteúdo, busca e referências. O projeto ainda precisa decidir os conteúdos prioritários, a navegação final, as fontes editoriais e como as imagens serão creditadas.
+
+Fora do escopo por enquanto
+- Modo escolar, planos de aula e ferramentas para professores.
+- Tratar ilustrações como registros históricos.
+- Presumir funcionalidades de conta, personalização ou tecnologia apenas porque aparecem em algumas referências visuais.

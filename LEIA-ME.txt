@@ -1,0 +1,50 @@
+EXPLORANDO A HISTÓRIA
+====================
+
+Aplicação de pesquisa histórica para público geral. O percurso combina tempo
+geológico e história humana, com linha do tempo, temas relacionados, conteúdos
+curados e referências para aprofundamento.
+
+Requisitos
+----------
+- Node.js LTS e npm
+
+Instalação
+----------
+No terminal, a partir da pasta `site`:
+
+    npm install
+
+Desenvolvimento
+---------------
+    npm run dev
+
+O Vite informa o endereço HTTP local. Abra-o no navegador; o projeto não é
+executado abrindo `index.html` por duplo clique.
+
+Testes e build
+--------------
+    npm test
+    npm run build
+
+Para testar localmente os arquivos de produção:
+
+    npm run preview
+
+O build estático fica em `site/dist` e pode ser publicado em um serviço de
+hospedagem HTTP para arquivos estáticos. Não há backend.
+
+Imagens
+-------
+`imagens/galeria` contém referências visuais originais. Antes de usar um asset
+no site publicado, confirme sua adequação histórica e os direitos de uso,
+registre texto alternativo e legenda, e inclua autoria/licença quando
+conhecidas. Imagens ilustrativas não são evidências documentais.
+
+Conteúdo
+--------
+A cobertura inicial é curada e não pretende ser uma enciclopédia exaustiva.
+Tempo geológico e história humana são períodos distintos; dinossauros não
+avianos não coexistiram com seres humanos. Conteúdos devem apresentar fontes,
+contextualizar incertezas e diferenciar pesquisa histórica de tradições
+mitológicas.
