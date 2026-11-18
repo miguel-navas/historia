@@ -3,6 +3,7 @@ import { catalog } from './data/catalog'
 import { revolutionTopics } from './data/revolutions'
 import { warTopics } from './data/wars'
 import { orientalTopics } from './data/oriental'
+import { mythologyTopics } from './data/mythology'
 import type { HistoricalEntry, TimeScale } from './data/types'
 import './App.css'
 
@@ -97,7 +98,7 @@ const topNav = [
   { label: 'Revoluções', icon: 'flame', href: '#/revolucoes' },
   { label: 'Guerras', icon: 'sword', href: '#/guerras' },
   { label: 'Oriental', icon: 'pagoda', href: '#/oriental' },
-  { label: 'Mitologia', icon: 'scroll' },
+  { label: 'Mitologia', icon: 'scroll', href: '#/mitologia' },
 ]
 
 function readRoute(hash: string): Route {
@@ -723,6 +724,34 @@ const orientalConfig: EraShowcaseConfig = {
   })),
 }
 
+const mitologiaConfig: EraShowcaseConfig = {
+  id: 'mitologia',
+  title: 'Mitologia',
+  subtitle: 'Deuses, monstros e heróis que nunca morrem',
+  heroImage: '/historia/assets/hero-mitologia.png',
+  exploreTitle: 'Explorar Mitologia',
+  searchPlaceholder: 'Buscar por deus, herói ou criatura',
+  filterGroupLabel: 'Filtrar temas de Mitologia',
+  filters: [
+    { id: 'todos', label: 'Todos' },
+    { id: 'grega', label: 'Grega' },
+    { id: 'nordica', label: 'Nórdica' },
+    { id: 'egipcia', label: 'Egípcia' },
+    { id: 'criaturas', label: 'Criaturas' },
+  ],
+  cards: mythologyTopics.map((topic) => ({
+    id: topic.id, title: topic.title, meta: topic.summary,
+    searchText: catalog.find((entry) => entry.id === topic.id)?.sections.map((section) => section.body).join(' '),
+    imageSrc: '/historia/assets/mitologia/cards-atlas.png',
+    imageStyle: {
+      backgroundSize: '300% 400%',
+      backgroundPosition: `${topic.tile[0] * 50}% ${topic.tile[1] * 100 / 3}%`,
+    },
+    href: `#/conteudos/${topic.id}`,
+    categories: topic.categories,
+  })),
+}
+
 function normalizeShowcaseSearch(text: string) {
   return text.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLocaleLowerCase('pt-BR')
 }
@@ -1074,7 +1103,7 @@ function EntryDetailPage({ id }: { id: string }) {
         <div className="detail-sections">
           {entry.sections.map((section) => (
             <section key={section.heading} className="content-section">
-              <p className="eyebrow">{section.classification}</p>
+              <p className="eyebrow">{{ evidence: 'Evidência', interpretation: 'Interpretação', tradition: 'Tradição cultural' }[section.classification]}</p>
               <h2>{section.heading}</h2>
               <p>{section.body}</p>
             </section>
@@ -1156,6 +1185,8 @@ function App() {
     page = <EraShowcasePage key="guerras" config={guerrasConfig} />
   } else if (route.path === '/oriental') {
     page = <EraShowcasePage key="oriental" config={orientalConfig} />
+  } else if (route.path === '/mitologia') {
+    page = <EraShowcasePage key="mitologia" config={mitologiaConfig} />
   } else if (route.path === '/linha-do-tempo' || route.path === '/periodos') {
     page = <TimelinePage />
   } else if (route.path === '/periodos/geologico') {

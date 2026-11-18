@@ -2165,6 +2165,20 @@ a.round-button:hover {
   aspect-ratio: 16 / 9;
 }
 
+.mitologia-page .pre-hero-content {
+  transform: translateY(clamp(-110px, -7vw, -52px));
+}
+
+.mitologia-page .pre-card {
+  min-height: clamp(240px, 20vw, 300px);
+}
+
+.mitologia-page .pre-card-photo {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
 html,
 body {
   overflow-x: clip;

@@ -9,6 +9,52 @@ afterEach(() => {
 })
 
 describe('App', () => {
+  it('opens Mitologia with eleven distinct cultural topics and a sourced Zeus article', async () => {
+    render(<App />)
+    fireEvent.click(screen.getByRole('link', { name: 'Mitologia' }))
+    expect(await screen.findByRole('heading', { name: 'Explorar Mitologia' })).toBeTruthy()
+    expect(screen.getByRole('link', { name: 'Mitologia' }).getAttribute('aria-current')).toBe('page')
+    const cards = document.querySelectorAll<HTMLAnchorElement>('.pre-card')
+    expect(cards.length).toBe(11)
+    expect(new Set(Array.from(cards, (card) => card.hash)).size).toBe(11)
+    for (const card of cards) {
+      const entry = catalog.find((item) => item.id === card.hash.replace('#/conteudos/', ''))
+      expect(entry?.time.scale).toBe('cultural')
+      expect(entry?.time.timelineYear).toBeUndefined()
+      expect(entry!.sources.length).toBeGreaterThan(0)
+    }
+    fireEvent.click(screen.getByRole('link', { name: /Zeus e o Olimpo/ }))
+    expect(await screen.findByRole('heading', { name: 'Zeus e o Olimpo' })).toBeTruthy()
+    expect(screen.getAllByText('Tradição cultural').length).toBeGreaterThan(0)
+    expect(screen.getByRole('heading', { name: 'Fontes e leituras' })).toBeTruthy()
+  })
+
+  it('combines mythological tradition filters with unaccented deity searches', () => {
+    window.location.hash = '#/mitologia'
+    render(<App />)
+    const filters = screen.getByRole('group', { name: 'Filtrar temas de Mitologia' })
+    const search = screen.getByRole('searchbox', { name: 'Buscar por deus, herói ou criatura' })
+    fireEvent.click(within(filters).getByRole('button', { name: 'Grega' }))
+    expect(document.querySelectorAll('.pre-card').length).toBe(4)
+    fireEvent.change(search, { target: { value: 'Hercules' } })
+    expect(document.querySelectorAll('.pre-card').length).toBe(1)
+    fireEvent.click(within(filters).getByRole('button', { name: 'Nórdica' }))
+    expect(screen.getByText('Nenhum tema encontrado com esses critérios.')).toBeTruthy()
+    fireEvent.change(search, { target: { value: 'Mjolnir' } })
+    expect(screen.getByRole('link', { name: /Thor e o Ragnarök/ })).toBeTruthy()
+    fireEvent.change(search, { target: { value: '' } })
+    expect(document.querySelectorAll('.pre-card').length).toBe(2)
+    fireEvent.click(within(filters).getByRole('button', { name: 'Egípcia' }))
+    expect(document.querySelectorAll('.pre-card').length).toBe(1)
+    fireEvent.change(search, { target: { value: 'Anubis' } })
+    expect(screen.getByRole('link', { name: /Mitologia Egípcia/ })).toBeTruthy()
+    fireEvent.change(search, { target: { value: '' } })
+    fireEvent.click(within(filters).getByRole('button', { name: 'Criaturas' }))
+    expect(document.querySelectorAll('.pre-card').length).toBe(2)
+    fireEvent.click(within(filters).getByRole('button', { name: 'Todos' }))
+    expect(document.querySelectorAll('.pre-card').length).toBe(11)
+  })
+
   it('opens Oriental from the menu and resolves all twelve illustrated card destinations', async () => {
     render(<App />)
     fireEvent.click(screen.getByRole('link', { name: 'Oriental' }))
