@@ -24,7 +24,6 @@ export default function ExplorePage({ queryString }: { queryString: string }) {
   const setQuery = (nextQuery: string) => setSearch((current) => ({ ...current, query: nextQuery }))
   const setFilter = (nextFilter: ExploreFilter) => setSearch((current) => ({ ...current, filter: nextFilter }))
   const inputRef = useRef<HTMLInputElement>(null)
-  const searchRef = useRef<HTMLElement>(null)
 
   const filtering = query.trim() !== '' || filter !== 'all'
   const results = filtering ? searchExploreCatalog(query, filter) : []
@@ -42,16 +41,10 @@ export default function ExplorePage({ queryString }: { queryString: string }) {
         <div className="explore-hero-copy">
           <h1 id="explore-title">Explorar</h1>
           <p>Explore toda a História em um só lugar</p>
-          <button className="button button-primary explore-start" type="button" onClick={() => {
-            searchRef.current?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' })
-            inputRef.current?.focus({ preventScroll: true })
-          }}>
-            <span aria-hidden="true">→</span> Começar a Explorar
-          </button>
         </div>
       </section>
 
-      <section className="explore-browser" ref={searchRef} aria-labelledby="explore-search-title">
+      <section className="explore-browser" aria-labelledby="explore-search-title">
         <div className="explore-toolbar">
           <h2 id="explore-search-title">Explorar</h2>
           <div className="explore-controls">

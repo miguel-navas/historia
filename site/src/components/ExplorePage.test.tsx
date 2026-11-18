@@ -12,7 +12,6 @@ describe('Explorar', () => {
     fireEvent.click(screen.getByRole('link', { name: 'Explorar' }))
     expect(await screen.findByRole('heading', { name: 'Os 6 Mundos' })).toBeTruthy()
     expect(screen.getByRole('link', { name: 'Explorar' }).getAttribute('aria-current')).toBe('page')
-    expect(screen.getByRole('button', { name: 'Começar a Explorar' })).toBeTruthy()
     const worlds = document.querySelectorAll<HTMLAnchorElement>('.explore-world-card')
     expect(Array.from(worlds, (link) => link.hash)).toEqual([
       '#/antiguidade', '#/idade-media', '#/revolucoes', '#/guerras', '#/oriental', '#/mitologia',
