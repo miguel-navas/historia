@@ -1,6 +1,8 @@
 import type { HistoricalEntry } from './types'
+import { additionalRevolutionEntries } from './revolutions'
 
 export const catalog: HistoricalEntry[] = [
+  ...additionalRevolutionEntries,
   {
     id: 'formacao-da-terra',
     kind: 'period',

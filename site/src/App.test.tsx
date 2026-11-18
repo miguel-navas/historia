@@ -1,6 +1,7 @@
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import App from './App'
+import { catalog } from './data/catalog'
 
 afterEach(() => {
   cleanup()
@@ -8,6 +9,72 @@ afterEach(() => {
 })
 
 describe('App', () => {
+  it('opens Revoluções from the menu and gives all nine cards specific content destinations', async () => {
+    render(<App />)
+    fireEvent.click(screen.getByRole('link', { name: 'Revoluções' }))
+    expect(await screen.findByRole('heading', { name: 'Explorar Revoluções' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: 'Revoluções' })).toBeTruthy()
+    expect(screen.queryByRole('link', { name: 'Explorar Revoluções' })).toBeNull()
+    const cards = document.querySelectorAll<HTMLAnchorElement>('.pre-card')
+    expect(cards.length).toBe(9)
+    expect(new Set(Array.from(cards, (card) => card.hash)).size).toBe(9)
+    for (const card of cards) {
+      const id = card.hash.replace('#/conteudos/', '')
+      expect(catalog.some((entry) => entry.id === id)).toBe(true)
+    }
+    fireEvent.click(screen.getByRole('link', { name: /Revolução Russa.*1917/ }))
+    expect(await screen.findByRole('heading', { name: 'Revolução Russa' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: 'Fontes e leituras' })).toBeTruthy()
+  })
+
+  it('combines revolution region filters and search by year or historical figure', () => {
+    window.location.hash = '#/revolucoes'
+    render(<App />)
+    const filters = screen.getByRole('group', { name: 'Filtrar temas das Revoluções' })
+    const search = screen.getByRole('searchbox', { name: 'Buscar por revolução, personagem ou ano' })
+    fireEvent.click(within(filters).getByRole('button', { name: 'Américas' }))
+    expect(document.querySelectorAll('.pre-card').length).toBe(3)
+    fireEvent.change(search, { target: { value: '1822' } })
+    expect(document.querySelectorAll('.pre-card').length).toBe(1)
+    expect(screen.getByRole('link', { name: /Independência do Brasil/ })).toBeTruthy()
+    fireEvent.click(within(filters).getByRole('button', { name: 'Ideias' }))
+    expect(screen.getByText('Nenhum tema encontrado com esses critérios.')).toBeTruthy()
+    fireEvent.click(within(filters).getByRole('button', { name: 'Todos' }))
+    fireEvent.change(search, { target: { value: 'Voltaire' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Buscar' }))
+    expect(document.querySelectorAll('.pre-card').length).toBe(1)
+    expect(screen.getByRole('link', { name: /Iluminismo/ })).toBeTruthy()
+    fireEvent.change(search, { target: { value: '' } })
+    expect(document.querySelectorAll('.pre-card').length).toBe(9)
+  })
+
+  it('resets the showcase search and filter when navigating between eras', async () => {
+    window.location.hash = '#/revolucoes'
+    render(<App />)
+    fireEvent.change(screen.getByRole('searchbox', { name: 'Buscar por revolução, personagem ou ano' }), {
+      target: { value: '1917' },
+    })
+    fireEvent.click(screen.getByRole('link', { name: 'Idade Média' }))
+    expect(await screen.findByRole('heading', { name: 'Explorar Idade Média' })).toBeTruthy()
+    expect(document.querySelectorAll('.pre-card').length).toBe(11)
+    fireEvent.click(screen.getByRole('link', { name: 'Revoluções' }))
+    expect(await screen.findByRole('heading', { name: 'Explorar Revoluções' })).toBeTruthy()
+    expect(document.querySelectorAll('.pre-card').length).toBe(9)
+  })
+
+  it('matches unaccented revolution searches and years within displayed ranges', () => {
+    window.location.hash = '#/revolucoes'
+    render(<App />)
+    const search = screen.getByRole('searchbox', { name: 'Buscar por revolução, personagem ou ano' })
+    fireEvent.change(search, { target: { value: 'revolucao francesa' } })
+    expect(document.querySelectorAll('.pre-card').length).toBe(1)
+    expect(screen.getByRole('link', { name: /Revolução Francesa/ })).toBeTruthy()
+    fireEvent.change(search, { target: { value: '1800' } })
+    expect(screen.getByRole('link', { name: /Revolução Haitiana/ })).toBeTruthy()
+    expect(screen.queryByRole('link', { name: /Revolução Francesa/ })).toBeNull()
+    fireEvent.change(search, { target: { value: 'independencia' } })
+    expect(screen.getByRole('link', { name: /Independência do Brasil/ })).toBeTruthy()
+  })
   it('renders the home page and navigation destinations', () => {
     render(<App />)
 

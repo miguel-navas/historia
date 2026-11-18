@@ -2130,6 +2130,12 @@ a.round-button:hover {
 
 
 /* ---------- Cabeçalho fixo no topo + Logo em imagem ---------- */
+.revolucoes-page .pre-card-photo {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 550 / 170;
+}
+
 html,
 body {
   overflow-x: clip;

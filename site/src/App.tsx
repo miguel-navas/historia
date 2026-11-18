@@ -1,5 +1,6 @@
 import { type CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
 import { catalog } from './data/catalog'
+import { revolutionTopics } from './data/revolutions'
 import type { HistoricalEntry, TimeScale } from './data/types'
 import './App.css'
 
@@ -91,7 +92,7 @@ const topNav = [
   { label: 'Pré-História', icon: 'spiral', href: '#/pre-historia' },
   { label: 'Antiguidade', icon: 'column', href: '#/antiguidade' },
   { label: 'Idade Média', icon: 'castle', href: '#/idade-media' },
-  { label: 'Revoluções', icon: 'flame' },
+  { label: 'Revoluções', icon: 'flame', href: '#/revolucoes' },
   { label: 'Guerras', icon: 'sword' },
   { label: 'Oriental', icon: 'pagoda' },
   { label: 'Mitologia', icon: 'scroll' },
@@ -293,6 +294,9 @@ type ShowcaseCard = {
   title: string
   meta: string
   imageSrc: string
+  imageStyle?: CSSProperties
+  searchText?: string
+  yearRange?: [number, number]
   href: string
   categories: string[]
 }
@@ -622,12 +626,51 @@ const idadeMediaConfig: EraShowcaseConfig = {
   ],
 }
 
+const revolucoesConfig: EraShowcaseConfig = {
+  id: 'revolucoes',
+  title: 'Revoluções',
+  subtitle: 'O mundo virou de cabeça para baixo',
+  heroImage: '/historia/assets/hero-revolucoes.png',
+  exploreTitle: 'Explorar Revoluções',
+  searchPlaceholder: 'Buscar por revolução, personagem ou ano',
+  filterGroupLabel: 'Filtrar temas das Revoluções',
+  filters: [
+    { id: 'todos', label: 'Todos' },
+    { id: 'europa', label: 'Europa' },
+    { id: 'americas', label: 'Américas' },
+    { id: 'mundo', label: 'Mundo' },
+    { id: 'ideias', label: 'Ideias' },
+  ],
+  cards: revolutionTopics.map((topic, index) => ({
+    id: topic.id,
+    title: topic.title,
+    meta: `${topic.date} • ${topic.summary}`,
+    searchText: catalog.find((entry) => entry.id === topic.id)?.sections.map((section) => section.body).join(' '),
+    yearRange: topic.id === 'iluminismo' ? [1600, 1799] : [
+      Number(topic.date.match(/\d{4}/g)?.[0]),
+      Number(topic.date.match(/\d{4}/g)?.at(-1)),
+    ],
+    imageSrc: '/historia/assets/revolucoes/cards-referencia.webp',
+    imageStyle: {
+      // Janelas da ilustração original; títulos e botões são HTML acessível.
+      backgroundSize: '349.091% 752.941%',
+      backgroundPosition: `${[3.942, 47.445, 94.161][index % 3]}% ${[29.73, 57.658, 86.486][Math.floor(index / 3)]}%`,
+    },
+    href: `#/conteudos/${topic.id}`,
+    categories: topic.categories,
+  })),
+}
+
+function normalizeShowcaseSearch(text: string) {
+  return text.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLocaleLowerCase('pt-BR')
+}
+
 function EraShowcasePage({ config }: { config: EraShowcaseConfig }) {
   const [query, setQuery] = useState('')
   const [submittedQuery, setSubmittedQuery] = useState('')
   const [activeFilter, setActiveFilter] = useState('todos')
 
-  const effectiveQuery = (submittedQuery || query).trim().toLocaleLowerCase('pt-BR')
+  const effectiveQuery = normalizeShowcaseSearch((submittedQuery || query).trim())
 
   const visibleCards = useMemo(() => {
     return config.cards.filter((card) => {
@@ -635,9 +678,14 @@ function EraShowcasePage({ config }: { config: EraShowcaseConfig }) {
         return false
       }
       if (!effectiveQuery) return true
+      if (/^\d{4}$/.test(effectiveQuery) && card.yearRange) {
+        const year = Number(effectiveQuery)
+        return year >= card.yearRange[0] && year <= card.yearRange[1]
+      }
       return (
-        card.title.toLocaleLowerCase('pt-BR').includes(effectiveQuery) ||
-        card.meta.toLocaleLowerCase('pt-BR').includes(effectiveQuery)
+        normalizeShowcaseSearch(card.title).includes(effectiveQuery) ||
+        normalizeShowcaseSearch(card.meta).includes(effectiveQuery) ||
+        normalizeShowcaseSearch(card.searchText ?? '').includes(effectiveQuery)
       )
     })
   }, [activeFilter, config.cards, effectiveQuery])
@@ -647,7 +695,7 @@ function EraShowcasePage({ config }: { config: EraShowcaseConfig }) {
   } as CSSProperties
 
   return (
-    <div className="prehistoria-page">
+    <div className={`prehistoria-page${config.id === 'revolucoes' ? ' revolucoes-page' : ''}`}>
       <section
         className="pre-hero"
         style={heroStyle}
@@ -709,7 +757,7 @@ function EraShowcasePage({ config }: { config: EraShowcaseConfig }) {
               <a className="pre-card" href={card.href} key={card.id}>
                 <span
                   className="pre-card-photo"
-                  style={{ backgroundImage: `url(${card.imageSrc})` }}
+                  style={{ backgroundImage: `url(${card.imageSrc})`, ...card.imageStyle }}
                   aria-hidden="true"
                 />
                 <span className="pre-card-body">
@@ -1037,6 +1085,8 @@ function App() {
     page = <EraShowcasePage key="antiguidade" config={antiguidadeConfig} />
   } else if (route.path === '/idade-media') {
     page = <EraShowcasePage key="idade-media" config={idadeMediaConfig} />
+  } else if (route.path === '/revolucoes') {
+    page = <EraShowcasePage key="revolucoes" config={revolucoesConfig} />
   } else if (route.path === '/linha-do-tempo' || route.path === '/periodos') {
     page = <TimelinePage />
   } else if (route.path === '/periodos/geologico') {
