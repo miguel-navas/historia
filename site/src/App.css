@@ -2136,6 +2136,21 @@ a.round-button:hover {
   aspect-ratio: 550 / 170;
 }
 
+.guerras-page .pre-card-photo {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 570 / 170;
+}
+
+.guerras-page .pre-hero-content {
+  max-width: 1200px;
+  transform: translateY(clamp(-64px, -4vw, -32px));
+}
+
+.guerras-page .pre-hero h1 {
+  font-size: clamp(38px, 5vw, 72px);
+}
+
 html,
 body {
   overflow-x: clip;

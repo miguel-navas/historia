@@ -9,6 +9,64 @@ afterEach(() => {
 })
 
 describe('App', () => {
+  it('opens Guerras from the menu with six distinct working article destinations', async () => {
+    render(<App />)
+    fireEvent.click(screen.getByRole('link', { name: 'Guerras' }))
+    expect(await screen.findByRole('heading', { name: 'Guerras que Mudaram o Mundo' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: 'Explorar Guerras' })).toBeTruthy()
+    const cards = document.querySelectorAll<HTMLAnchorElement>('.pre-card')
+    expect(cards.length).toBe(6)
+    expect(new Set(Array.from(cards, (card) => card.hash)).size).toBe(6)
+    for (const card of cards) {
+      const entry = catalog.find((item) => item.id === card.hash.replace('#/conteudos/', ''))
+      expect(entry).toBeTruthy()
+      expect(entry!.sources.length).toBeGreaterThan(0)
+      expect(entry!.title).toBe(card.querySelector('.pre-card-title')!.textContent)
+    }
+    fireEvent.click(screen.getByRole('link', { name: /Segunda Guerra Mundial1939/ }))
+    expect(await screen.findByRole('heading', { name: 'Segunda Guerra Mundial' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: 'Fontes e leituras' })).toBeTruthy()
+  })
+
+  it('combines war periods and unaccented figure search, and restores all six cards', () => {
+    window.location.hash = '#/guerras'
+    render(<App />)
+    const filters = screen.getByRole('group', { name: 'Filtrar temas das Guerras' })
+    const search = screen.getByRole('searchbox', { name: 'Buscar por conflito, personagem ou ano' })
+    fireEvent.click(within(filters).getByRole('button', { name: 'Idade Média' }))
+    expect(document.querySelectorAll('.pre-card').length).toBe(2)
+    fireEvent.change(search, { target: { value: 'Genghis' } })
+    expect(document.querySelectorAll('.pre-card').length).toBe(1)
+    expect(screen.getByRole('link', { name: /Conquistas Mongóis/ })).toBeTruthy()
+    fireEvent.change(search, { target: { value: 'Napoleao' } })
+    expect(screen.getByText('Nenhum tema encontrado com esses critérios.')).toBeTruthy()
+    fireEvent.click(within(filters).getByRole('button', { name: 'Era Napoleônica' }))
+    expect(screen.getByRole('link', { name: /Guerras Napoleônicas/ })).toBeTruthy()
+    fireEvent.change(search, { target: { value: '' } })
+    fireEvent.click(within(filters).getByRole('button', { name: 'Todos' }))
+    expect(document.querySelectorAll('.pre-card').length).toBe(6)
+  })
+
+  it('searches war date intervals with explicit BC/AD distinction and inclusive endpoints', () => {
+    window.location.hash = '#/guerras'
+    render(<App />)
+    const search = screen.getByRole('searchbox', { name: 'Buscar por conflito, personagem ou ano' })
+    for (const year of ['480', '480 a.C.', '499 a.C.', '449 a.C.']) {
+      fireEvent.change(search, { target: { value: year } })
+      expect(document.querySelectorAll('.pre-card').length).toBe(1)
+      expect(screen.getByRole('link', { name: /Guerras Greco-Persas/ })).toBeTruthy()
+    }
+    fireEvent.change(search, { target: { value: '480 d.C.' } })
+    expect(screen.getByText('Nenhum tema encontrado com esses critérios.')).toBeTruthy()
+    fireEvent.change(search, { target: { value: '330 a.C.' } })
+    expect(screen.getByRole('link', { name: /Conquistas de Alexandre/ })).toBeTruthy()
+    fireEvent.change(search, { target: { value: '1810' } })
+    expect(screen.getByRole('link', { name: /Guerras Napoleônicas/ })).toBeTruthy()
+    fireEvent.change(search, { target: { value: '1294' } })
+    expect(document.querySelectorAll('.pre-card').length).toBe(1)
+    expect(screen.getByRole('link', { name: /Conquistas Mongóis/ })).toBeTruthy()
+  })
+
   it('opens Revoluções from the menu and gives all nine cards specific content destinations', async () => {
     render(<App />)
     fireEvent.click(screen.getByRole('link', { name: 'Revoluções' }))

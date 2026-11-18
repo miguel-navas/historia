@@ -1,6 +1,7 @@
 import { type CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
 import { catalog } from './data/catalog'
 import { revolutionTopics } from './data/revolutions'
+import { warTopics } from './data/wars'
 import type { HistoricalEntry, TimeScale } from './data/types'
 import './App.css'
 
@@ -93,7 +94,7 @@ const topNav = [
   { label: 'Antiguidade', icon: 'column', href: '#/antiguidade' },
   { label: 'Idade Média', icon: 'castle', href: '#/idade-media' },
   { label: 'Revoluções', icon: 'flame', href: '#/revolucoes' },
-  { label: 'Guerras', icon: 'sword' },
+  { label: 'Guerras', icon: 'sword', href: '#/guerras' },
   { label: 'Oriental', icon: 'pagoda' },
   { label: 'Mitologia', icon: 'scroll' },
 ]
@@ -661,6 +662,37 @@ const revolucoesConfig: EraShowcaseConfig = {
   })),
 }
 
+const guerrasConfig: EraShowcaseConfig = {
+  id: 'guerras',
+  title: 'Guerras que Mudaram o Mundo',
+  subtitle: 'Uma jornada pelos conflitos que moldaram a civilização',
+  heroImage: '/historia/assets/hero-guerras.png',
+  exploreTitle: 'Explorar Guerras',
+  searchPlaceholder: 'Buscar por conflito, personagem ou ano',
+  filterGroupLabel: 'Filtrar temas das Guerras',
+  filters: [
+    { id: 'todos', label: 'Todos' },
+    { id: 'antiguidade', label: 'Antiguidade' },
+    { id: 'medieval', label: 'Idade Média' },
+    { id: 'napoleonica', label: 'Era Napoleônica' },
+    { id: 'contemporanea', label: 'Mundo Contemporâneo' },
+  ],
+  cards: warTopics.map((topic) => ({
+    id: topic.id,
+    title: topic.title,
+    meta: `${topic.date} • ${topic.summary}`,
+    searchText: topic.body,
+    yearRange: topic.yearRange,
+    imageSrc: '/historia/assets/guerras/cards-referencia.webp',
+    imageStyle: {
+      backgroundSize: '359.298% 677.647%',
+      backgroundPosition: `${topic.imagePosition[0]}% ${topic.imagePosition[1]}%`,
+    },
+    href: `#/conteudos/${topic.id}`,
+    categories: topic.categories,
+  })),
+}
+
 function normalizeShowcaseSearch(text: string) {
   return text.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLocaleLowerCase('pt-BR')
 }
@@ -678,8 +710,11 @@ function EraShowcasePage({ config }: { config: EraShowcaseConfig }) {
         return false
       }
       if (!effectiveQuery) return true
-      if (/^\d{4}$/.test(effectiveQuery) && card.yearRange) {
-        const year = Number(effectiveQuery)
+      const yearQuery = effectiveQuery.match(/^(\d{1,4})(?:\s*(a\.?\s*c\.?|d\.?\s*c\.?))?$/)
+      if (yearQuery && card.yearRange) {
+        const era = yearQuery[2]?.replace(/[.\s]/g, '')
+        const beforeChrist = era === 'ac' || (!era && card.yearRange[1] < 0)
+        const year = beforeChrist ? 1 - Number(yearQuery[1]) : Number(yearQuery[1])
         return year >= card.yearRange[0] && year <= card.yearRange[1]
       }
       return (
@@ -695,7 +730,7 @@ function EraShowcasePage({ config }: { config: EraShowcaseConfig }) {
   } as CSSProperties
 
   return (
-    <div className={`prehistoria-page${config.id === 'revolucoes' ? ' revolucoes-page' : ''}`}>
+    <div className={`prehistoria-page ${config.id}-page`}>
       <section
         className="pre-hero"
         style={heroStyle}
@@ -1087,6 +1122,8 @@ function App() {
     page = <EraShowcasePage key="idade-media" config={idadeMediaConfig} />
   } else if (route.path === '/revolucoes') {
     page = <EraShowcasePage key="revolucoes" config={revolucoesConfig} />
+  } else if (route.path === '/guerras') {
+    page = <EraShowcasePage key="guerras" config={guerrasConfig} />
   } else if (route.path === '/linha-do-tempo' || route.path === '/periodos') {
     page = <TimelinePage />
   } else if (route.path === '/periodos/geologico') {
