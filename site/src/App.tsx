@@ -6,6 +6,7 @@ import { orientalTopics } from './data/oriental'
 import { mythologyTopics } from './data/mythology'
 import type { HistoricalEntry, TimeScale } from './data/types'
 import './App.css'
+import ExplorePage from './components/ExplorePage'
 
 type Route = {
   path: string
@@ -1199,6 +1200,8 @@ function App() {
     page = <TracksPage trackId={routeParts[1]} />
   } else if (route.path === '/busca') {
     page = <SearchPage route={route} />
+  } else if (route.path === '/explorar') {
+    page = <ExplorePage queryString={route.query.toString()} />
   } else if (routeParts[0] === 'conteudos' && routeParts[1]) {
     page = <EntryDetailPage id={routeParts[1]} />
   } else {
@@ -1239,17 +1242,9 @@ function App() {
               <Icon name={item.icon} /> {item.label}
             </button>
           ))}
-          <details className="nav-explore">
-            <summary className="nav-item">
-              <Icon name="compass" /> Explorar <span aria-hidden="true" className="nav-caret">⌄</span>
-            </summary>
-            <div className="nav-explore-menu">
-              <a href="#/linha-do-tempo" aria-current={route.path === '/linha-do-tempo' ? 'page' : undefined}>Linha do tempo</a>
-              <a href="#/periodos" aria-current={route.path.startsWith('/periodos') ? 'page' : undefined}>Períodos</a>
-              <a href="#/trilhas" aria-current={route.path.startsWith('/trilhas') ? 'page' : undefined}>Trilhas</a>
-              <a href="#/busca" aria-current={route.path === '/busca' ? 'page' : undefined}>Buscar</a>
-            </div>
-          </details>
+          <a className="nav-item" href="#/explorar" aria-current={route.path === '/explorar' ? 'page' : undefined}>
+            <Icon name="compass" /> Explorar
+          </a>
         </nav>
         <div className="header-actions">
           <a className="round-button nav-search" href="#/busca" aria-label="Buscar">
