@@ -1,0 +1,16 @@
+# Imagens de Oriental
+
+Arquivos gerados pela ferramenta integrada ImageGen a pedido do usuário, mantendo os originais intactos:
+
+- `../hero-oriental.png`: panorama limpo baseado em `imagens/galeria/image_20261110_230701.webp`, com apoio visual da segunda referência.
+- `cards-atlas.png`: um atlas único de três colunas por quatro linhas, derivado de `imagens/galeria/image_20261110_230839.webp`. As doze cenas foram mantidas na ordem da referência e receberam áreas iguais de 16:9 sem títulos nem botões. Janelas CSS associadas a cada tema selecionam as ilustrações; todos os textos são HTML.
+
+São ilustrações de apoio, não fontes documentais nem reconstruções certificadas. Autoria/licença das referências não foram informadas; esta nota registra a utilização solicitada sem atribuir uma licença não confirmada.
+
+## Prompt do panorama
+
+Edit target: FIRST reference, Oriental history website montage. SECOND reference: supporting style and visual motifs only. Create ONE clean panoramic BACKGROUND image for the same navy/gold history website. Preserve first reference's composition: Great Wall and mountain silhouettes on left, armored Japanese samurai lower-left, Mongol mounted leader left-center, Chinese palace and terracotta army center, seated golden Buddha in temple right-center, Silk Road caravan along lower middle, discreet shinobi silhouette lower-right, Taj Mahal at far right beneath moonlit sky. Remove ALL original top navigation, logos, words, heading, subtitle and button, naturally reconstructing imagery underneath. Cinematic painterly historical illustration with deep navy night sky and restrained warm gold lantern light. Upper-central half has broad clean dark negative space for live HTML heading; detailed historical motifs in lower half. Montage spans cultures and times as illustration, not single real historical scene. Panoramic landscape approximately 2.5:1. No typography, no UI, no borders, no watermark. Save final image locally for website use.
+
+## Prompt do atlas
+
+Edit target: attached Oriental page screenshot. Make ONE SINGLE seamless 3-column by 4-row image atlas for website card artwork, using only the twelve illustrated scenes in the reference, retaining their cinematic painterly style. Remove ALL navigation, background decorations, headings, labels, dates, words, buttons, badges, borders, gutters and logos. Reconstruct clean artwork where text had been. Exactly 12 equal sized rectangular panels, in fixed reading order: row1 imperial Chinese illuminated palace / Great Wall of China / Terracotta Army; row2 Silk Road camel caravan / feudal Japanese castle with bamboo / samurai warrior in misty forest; row3 discreet ninja on Japanese roof at night / Mongol mounted army / ancient Persian Persepolis stone columns; row4 Taj Mahal with reflecting pool / Genghis Khan mounted in front of Mongol cavalry / seated golden Buddha inside Asian temple. Every panel fully fills its equal rectangular tile, no gaps, no margins, no framing, no overlap between panels. Whole canvas landscape 4:3 (such as1536x1152), each panel16:9. Illustrative artistic references across centuries, not documentary images. Preserve the reference's subject matter and arrangement. Absolutely NO TEXT of any kind. Save this one atlas locally for website use.

@@ -2151,6 +2151,20 @@ a.round-button:hover {
   font-size: clamp(38px, 5vw, 72px);
 }
 
+.oriental-page .pre-hero-content {
+  transform: translateY(clamp(-56px, -3.5vw, -28px));
+}
+
+.oriental-page .pre-card {
+  min-height: clamp(240px, 20vw, 300px);
+}
+
+.oriental-page .pre-card-photo {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
 html,
 body {
   overflow-x: clip;

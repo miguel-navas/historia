@@ -2,6 +2,7 @@ import { type CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
 import { catalog } from './data/catalog'
 import { revolutionTopics } from './data/revolutions'
 import { warTopics } from './data/wars'
+import { orientalTopics } from './data/oriental'
 import type { HistoricalEntry, TimeScale } from './data/types'
 import './App.css'
 
@@ -95,7 +96,7 @@ const topNav = [
   { label: 'Idade Média', icon: 'castle', href: '#/idade-media' },
   { label: 'Revoluções', icon: 'flame', href: '#/revolucoes' },
   { label: 'Guerras', icon: 'sword', href: '#/guerras' },
-  { label: 'Oriental', icon: 'pagoda' },
+  { label: 'Oriental', icon: 'pagoda', href: '#/oriental' },
   { label: 'Mitologia', icon: 'scroll' },
 ]
 
@@ -693,6 +694,35 @@ const guerrasConfig: EraShowcaseConfig = {
   })),
 }
 
+const orientalConfig: EraShowcaseConfig = {
+  id: 'oriental',
+  title: 'Oriental',
+  subtitle: 'Samurais, dragões e impérios milenares',
+  heroImage: '/historia/assets/hero-oriental.png',
+  exploreTitle: 'Explorar Oriental',
+  searchPlaceholder: 'Buscar por império, guerreiro ou dinastia',
+  filterGroupLabel: 'Filtrar temas de Oriental',
+  filters: [
+    { id: 'todos', label: 'Todos' },
+    { id: 'china', label: 'China' },
+    { id: 'japao', label: 'Japão' },
+    { id: 'imperios', label: 'Impérios' },
+    { id: 'guerreiros', label: 'Guerreiros' },
+  ],
+  cards: orientalTopics.map((topic) => ({
+    id: topic.id, title: topic.title, meta: `${topic.date} • ${topic.summary}`,
+    searchText: catalog.find((entry) => entry.id === topic.id)?.sections.map((section) => section.body).join(' '),
+    yearRange: topic.yearRange,
+    imageSrc: '/historia/assets/oriental/cards-atlas.png',
+    imageStyle: {
+      backgroundSize: '300% 400%',
+      backgroundPosition: `${topic.tile[0] * 50}% ${topic.tile[1] * 100 / 3}%`,
+    },
+    href: `#/conteudos/${topic.id}`,
+    categories: topic.categories,
+  })),
+}
+
 function normalizeShowcaseSearch(text: string) {
   return text.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLocaleLowerCase('pt-BR')
 }
@@ -1124,6 +1154,8 @@ function App() {
     page = <EraShowcasePage key="revolucoes" config={revolucoesConfig} />
   } else if (route.path === '/guerras') {
     page = <EraShowcasePage key="guerras" config={guerrasConfig} />
+  } else if (route.path === '/oriental') {
+    page = <EraShowcasePage key="oriental" config={orientalConfig} />
   } else if (route.path === '/linha-do-tempo' || route.path === '/periodos') {
     page = <TimelinePage />
   } else if (route.path === '/periodos/geologico') {

@@ -9,6 +9,67 @@ afterEach(() => {
 })
 
 describe('App', () => {
+  it('opens Oriental from the menu and resolves all twelve illustrated card destinations', async () => {
+    render(<App />)
+    fireEvent.click(screen.getByRole('link', { name: 'Oriental' }))
+    expect(await screen.findByRole('heading', { name: 'Explorar Oriental' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: 'Oriental' })).toBeTruthy()
+    expect(screen.getByRole('link', { name: 'Oriental' }).getAttribute('aria-current')).toBe('page')
+    const cards = document.querySelectorAll<HTMLAnchorElement>('.pre-card')
+    expect(cards.length).toBe(12)
+    expect(new Set(Array.from(cards, (card) => card.hash)).size).toBe(12)
+    for (const card of cards) {
+      const entry = catalog.find((item) => item.id === card.hash.replace('#/conteudos/', ''))
+      expect(entry).toBeTruthy()
+      expect(entry!.title).toBe(card.querySelector('.pre-card-title')!.textContent)
+      expect(entry!.sources.length).toBeGreaterThan(0)
+    }
+    fireEvent.click(screen.getByRole('link', { name: /Império Persa/ }))
+    expect(await screen.findByRole('heading', { name: 'Império Persa' })).toBeTruthy()
+    expect(screen.getByText('c. 550–330 a.C.')).toBeTruthy()
+    expect(screen.getByRole('heading', { name: 'Fontes e leituras' })).toBeTruthy()
+  })
+
+  it('combines Oriental filters with dynasty and warrior searches and handles no results', () => {
+    window.location.hash = '#/oriental'
+    render(<App />)
+    const filters = screen.getByRole('group', { name: 'Filtrar temas de Oriental' })
+    const search = screen.getByRole('searchbox', { name: 'Buscar por império, guerreiro ou dinastia' })
+    fireEvent.click(within(filters).getByRole('button', { name: 'China' }))
+    expect(document.querySelectorAll('.pre-card').length).toBe(4)
+    fireEvent.change(search, { target: { value: 'Qing' } })
+    expect(document.querySelectorAll('.pre-card').length).toBe(1)
+    expect(screen.getByRole('link', { name: /China Imperial/ })).toBeTruthy()
+    fireEvent.click(within(filters).getByRole('button', { name: 'Japão' }))
+    expect(screen.getByText('Nenhum tema encontrado com esses critérios.')).toBeTruthy()
+    fireEvent.change(search, { target: { value: '' } })
+    expect(document.querySelectorAll('.pre-card').length).toBe(3)
+    fireEvent.change(search, { target: { value: 'xogunatos' } })
+    expect(screen.getByRole('link', { name: /Japão Feudal/ })).toBeTruthy()
+    fireEvent.change(search, { target: { value: '' } })
+    fireEvent.click(within(filters).getByRole('button', { name: 'Guerreiros' }))
+    expect(document.querySelectorAll('.pre-card').length).toBe(3)
+    fireEvent.change(search, { target: { value: 'Temujin' } })
+    expect(screen.getByRole('link', { name: /Genghis Khan/ })).toBeTruthy()
+    fireEvent.change(search, { target: { value: '' } })
+    fireEvent.click(within(filters).getByRole('button', { name: 'Todos' }))
+    expect(document.querySelectorAll('.pre-card').length).toBe(12)
+  })
+
+  it('handles an imperial interval crossing BC and AD without inventing duplicate catalog entries', () => {
+    window.location.hash = '#/oriental'
+    render(<App />)
+    const search = screen.getByRole('searchbox', { name: 'Buscar por império, guerreiro ou dinastia' })
+    fireEvent.change(search, { target: { value: '200 a.C.' } })
+    expect(screen.getByRole('link', { name: /China Imperial/ })).toBeTruthy()
+    expect(screen.queryByRole('link', { name: /Império Persa/ })).toBeNull()
+    fireEvent.change(search, { target: { value: '1800 d.C.' } })
+    expect(screen.getByRole('link', { name: /China Imperial/ })).toBeTruthy()
+    fireEvent.change(search, { target: { value: 'Qin Shi Huang' } })
+    expect(screen.getByRole('link', { name: /Exército de Terracota/ })).toBeTruthy()
+    expect(catalog.filter((entry) => entry.id === 'imperio-mongol').length).toBe(1)
+  })
+
   it('opens Guerras from the menu with six distinct working article destinations', async () => {
     render(<App />)
     fireEvent.click(screen.getByRole('link', { name: 'Guerras' }))
